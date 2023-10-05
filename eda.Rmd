@@ -105,6 +105,55 @@ weather_df |>
 ```
 
 
+## Grouped mutate
+
+```{r}
+weather_df |>
+  group_by(name) |>
+  mutate(mean_tmax = mean(tmax, na.rm = TRUE))
+```
+
+
+
+```{r}
+weather_df |>
+  group_by(name) |>
+  mutate(mean_tmax = mean(tmax, na.rm = TRUE),
+         centered_tamx = tmax - mean_tmax) |>
+  ggplot(aes(x = date, y = centered_tmax, color = name)) +
+  geom_point()
+```
+
+
+
+```{r}
+weather_df |>
+  group_by(name, month) |>
+  mutate(tmax_rank = min_rank(tmax)) |> 
+  filter(tmax_rank < 2)
+```
+desc(tmax)
+
+
+### lags
+```{r}
+weather_df |>
+  group_by(name) |>
+  mutate(yesterday_tmax = lag(tmax))
+```
+lag(tmax, 3)
+if not groupby, then whole dataset lag 3 rows, wrong info
+
+```{r}
+weather_df |>
+  group_by(name) |>
+  mutate(temp_change = tmax - lag(tmax)) |>
+  summarize(
+    sd_temp_change = sd(temp_change, na.rm = TRUE)
+  )
+```
+
+
 
 
 
